@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>城市环保治理与调度决策驾驶舱</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
+</head>
+<body>
+  <div id="dashboard">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <header id="header">
+      <div class="header-left">
+        <span class="header-dot"></span>
+        <span class="header-city" id="headerCity">北海市</span>
+        <a class="nav-link" href="/assessment">评估中心</a>
+        <a class="nav-link" href="/dispatch">调度中心</a>
+      </div>
+      <div class="header-center">
+        <h1 id="headerTitle">城市环保治理与调度决策驾驶舱</h1>
+        <div class="subtitle" id="headerSubtitle">聚焦运行态势、重点风险、治理抓手与调度决策</div>
+      </div>
+      <div class="header-right"><span id="nowTime"></span></div>
+    </header>
+
+    <div id="kpiRow">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-green">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value" id="metricCollect">0</div>
+          <div class="kpi-label">环保治理综合指数<span class="metric-unit"> 分</span></div>
+          <div class="metric-trend" id="metricCollectTrend"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-teal">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value green" id="metricRate">0%</div>
+          <div class="kpi-label">资源化利用率</div>
+          <div class="metric-trend" id="metricRateTrend"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value blue" id="metricStation">0</div>
+          <div class="kpi-label">重点站点在线率<span class="metric-unit"> %</span></div>
+          <div class="metric-sub" id="metricStationSub"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-orange">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value orange" id="metricComplaint">0</div>
+          <div class="kpi-label">群众投诉量<span class="metric-unit"> 件</span></div>
+          <div class="metric-trend" id="metricComplaintTrend"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="body">
+      <div id="colLeft">
+        <div class="card card-full">
+          <div class="card-header"><span class="card-title">垃圾分类分析</span></div>
+          <div class="card-body"><div id="chartClass" class="chart-host"></div></div>
+        </div>
+        <div class="card card-full env-card">
+          <div class="card-header"><span class="card-title" id="envTitle">环境监测分析</span></div>
+          <div class="card-body env-card-body">
+            <div class="env-grid" id="envGrid">
+              <div class="env-aqi"><span class="env-aqi-val" id="envAqi">--</span><span class="env-aqi-label">AQI</span></div>
+              <div class="env-detail"><span>PM2.5: <b id="envPm25">--</b></span><span>PM10: <b id="envPm10">--</b></span></div>
+            </div>
+            <div id="chartEmission" class="chart-host chart-host-sm"></div>
+          </div>
+        </div>
+        <div class="card card-full">
+          <div class="card-header"><span class="card-title">投诉分析</span></div>
+          <div class="card-body"><div id="chartComplaint" class="chart-host"></div></div>
+        </div>
+      </div>
+
+      <div id="colCenter">
+        <div class="card" id="mapCard">
+          <div class="card-header">
+            <span class="card-title">城市态势地图</span>
+            <span class="map-zoom-hint">站点辖区视图</span>
+          </div>
+          <div class="card-body map-body">
+            <div class="map-legend" id="mapLegend">
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
+              <span class="map-legend-item"><i class="map-legend-block"></i>站点辖区</span>
+            </div>
+            <div id="mapContainer"></div>
+          </div>
+        </div>
+        <div class="card card-text">
+          <div class="card-header">
+            <span class="card-title" id="districtPanelTitle">站点状态</span>
+            <span class="map-zoom-hint" id="districtPanelHint">默认显示全市站点</span>
+          </div>
+          <div class="card-body station-table" id="stationTable"></div>
+        </div>
+      </div>
+
+      <div id="colRight">
+        <div class="card">
+          <div class="card-header"><span class="card-title">容量预警</span></div>
+          <div class="card-body capacity-body" id="capacityAlerts"></div>
+        </div>
+        <div class="card card-full equipment-card">
+          <div class="card-header"><span class="card-title">设备监测</span></div>
+          <div class="card-body"><div id="chartEquipment" class="chart-host"></div></div>
+        </div>
+        <div class="card card-full">
+          <div class="card-header"><span class="card-title">运输效率</span></div>
+          <div class="card-body"><div id="chartTransport" class="chart-host"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

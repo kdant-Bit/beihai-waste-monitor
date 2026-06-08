@@ -1,0 +1,8 @@
+﻿[
+  { "name":"北部湾广场站", "address":"海城区北部湾中路", "collector":"李建国", "daily":"120吨", "status":"online" },
+  { "name":"银滩站", "address":"银海区银滩大道", "collector":"张海明", "daily":"95吨", "status":"online" },
+  { "name":"侨港站", "address":"银海区侨港镇", "collector":"王芳", "daily":"88吨", "status":"online" },
+  { "name":"铁山港站", "address":"铁山港区兴港路", "collector":"陈志强", "daily":"65吨", "status":"online" },
+  { "name":"合浦站", "address":"合浦县廉州大道", "collector":"赵永刚", "daily":"72吨", "status":"offline" },
+  { "name":"工业园区站", "address":"海城区北海大道东", "collector":"刘伟", "daily":"150吨", "status":"online" }
+]

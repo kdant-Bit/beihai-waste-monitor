@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>站点评估中心</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
+</head>
+<body class="detail-page">
+  <div class="detail-layout assessment-layout">
+    <header class="detail-page-header">
+      <div>
+        <div class="detail-page-kicker">北海市垃圾回收评估中心</div>
+        <h1 id="assessmentTitle">站点能力评估</h1>
+      </div>
+      <div class="detail-header-links">
+        <a class="back-link" href="/">返回首页</a>
+      </div>
+    </header>
+
+    <main class="detail-page-main">
+      <section class="assessment-summary-grid">
+        <div class="card summary-metric-card">
+          <div class="card-body summary-metric-body">
+            <span class="detail-kpi-label">总产出量</span>
+            <span class="summary-metric-value" id="summaryOutput">--</span>
+          </div>
+        </div>
+        <div class="card summary-metric-card">
+          <div class="card-body summary-metric-body">
+            <span class="detail-kpi-label">总回收量</span>
+            <span class="summary-metric-value" id="summaryRecycling">--</span>
+          </div>
+        </div>
+        <div class="card summary-metric-card">
+          <div class="card-body summary-metric-body">
+            <span class="detail-kpi-label">平均处理能力</span>
+            <span class="summary-metric-value" id="summaryCapacity">--</span>
+          </div>
+        </div>
+        <div class="card summary-metric-card">
+          <div class="card-body summary-metric-body">
+            <span class="detail-kpi-label">综合最佳站点</span>
+            <span class="summary-metric-value summary-metric-text" id="summaryTopStation">--</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="assessment-stage-grid">
+        <article class="card assessment-card ranking-card">
+          <div class="card-header"><span class="card-title">站点评分排序</span></div>
+          <div class="card-body assessment-table-body" id="rankingTable"></div>
+        </article>
+
+        <article class="card assessment-card assessment-flow-card">
+          <div class="card-header">
+            <span class="card-title">辖区站点评估地图</span>
+            <span class="map-zoom-hint">北海辖区分片 + 站点覆盖</span>
+          </div>
+          <div class="card-body detail-page-chart-body">
+            <div class="flow-map-wrap">
+              <div class="map-legend assessment-map-legend">
+                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
+                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
+                <span class="map-legend-item"><i class="map-legend-block"></i>辖区分片</span>
+              </div>
+              <div id="assessmentFlowMap" class="detail-chart-host"></div>
+              <svg id="assessmentFlowSvg" class="assessment-flow-svg"></svg>
+            </div>
+          </div>
+        </article>
+
+        <article class="card assessment-card side-analysis-card">
+          <div class="card-header"><span class="card-title">综合评分垂直柱状图</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentVerticalChart" class="detail-chart-host"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="assessment-bottom-grid">
+        <article class="card assessment-card">
+          <div class="card-header"><span class="card-title">处理能力水平条形图</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentHorizontalChart" class="detail-chart-host"></div>
+          </div>
+        </article>
+
+        <article class="card assessment-card">
+          <div class="card-header"><span class="card-title">站点评估热力图</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentHeatmapChart" class="detail-chart-host"></div>
+          </div>
+        </article>
+
+        <article class="card assessment-card">
+          <div class="card-header"><span class="card-title">区域站点树图</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentTreeChart" class="detail-chart-host"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="{{ url_for('static', filename='js/assessment.js') }}"></script>
+</body>
+</html>

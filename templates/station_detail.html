@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>垃圾收集点位详情</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
+</head>
+<body class="detail-page">
+  <div class="detail-layout">
+    <header class="detail-page-header">
+      <div>
+        <div class="detail-page-kicker">北海市垃圾收集点位</div>
+        <h1 id="stationPageTitle">站点详情</h1>
+      </div>
+      <div class="detail-header-links">
+        <a class="back-link" href="/assessment">评估中心</a>
+        <a class="back-link" href="{{ url_for('index') }}">返回总览</a>
+      </div>
+    </header>
+
+    <main class="detail-page-main">
+      <section class="station-detail-layout">
+        <aside class="card station-info-panel">
+          <div class="card-header">
+            <span class="card-title">站点信息</span>
+          </div>
+          <div class="card-body station-info-body">
+            <div class="station-info-top">
+              <div class="detail-name" id="detailName">加载中...</div>
+              <div class="detail-status-badge" id="detailStatus">--</div>
+            </div>
+            <div class="detail-meta" id="detailAddress"></div>
+            <div class="detail-meta" id="detailCollector"></div>
+
+            <div class="detail-kpis station-info-kpis">
+              <div class="detail-kpi">
+                <span class="detail-kpi-label">日处理量</span>
+                <span class="detail-kpi-value" id="detailDailyTons">--</span>
+              </div>
+              <div class="detail-kpi">
+                <span class="detail-kpi-label">运行时段</span>
+                <span class="detail-kpi-value" id="detailHours">--</span>
+              </div>
+              <div class="detail-kpi">
+                <span class="detail-kpi-label">设备在线</span>
+                <span class="detail-kpi-value" id="detailEquipment">--</span>
+              </div>
+              <div class="detail-kpi">
+                <span class="detail-kpi-label">所属区域</span>
+                <span class="detail-kpi-value" id="detailDistrict">--</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="station-chart-panel">
+          <article class="card detail-page-card">
+          <div class="card-header"><span class="card-title">当前分类占比</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="stationClassChart" class="detail-chart-host"></div>
+          </div>
+          </article>
+
+          <article class="card detail-page-card detail-page-card-tall">
+            <div class="card-header"><span class="card-title">近7天分类回收趋势</span></div>
+            <div class="card-body detail-page-chart-body">
+              <div id="stationTrendChart" class="detail-chart-host"></div>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    window.STATION_ID = {{ station_id|tojson }};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="{{ url_for('static', filename='js/station_detail.js') }}"></script>
+</body>
+</html>
