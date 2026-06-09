@@ -7,101 +7,125 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
 </head>
-<body class="detail-page">
-  <div class="detail-layout assessment-layout">
-    <header class="detail-page-header">
-      <div>
-        <div class="detail-page-kicker">北海市垃圾回收评估中心</div>
+<body>
+  <div id="dashboard" class="assessment-dashboard">
+    <header id="header">
+      <div class="header-left">
+        <span class="header-dot"></span>
+        <span class="header-city">北海市</span>
+        <a class="nav-link" href="/">首页</a>
+        <a class="nav-link" href="/assessment">评估中心</a>
+        <a class="nav-link" href="/dispatch">调度中心</a>
+      </div>
+      <div class="header-center">
         <h1 id="assessmentTitle">站点能力评估</h1>
+        <div class="subtitle">产出、回收、能力与辖区覆盖综合评估看板</div>
       </div>
-      <div class="detail-header-links">
-        <a class="back-link" href="/dispatch">调度中心</a>
-        <a class="back-link" href="/">返回首页</a>
-      </div>
+      <div class="header-right"><span id="assessmentNowTime"></span></div>
     </header>
 
-    <main class="detail-page-main">
-      <section class="assessment-summary-grid">
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">总产出量</span>
-            <span class="summary-metric-value" id="summaryOutput">--</span>
-          </div>
+    <div id="kpiRow">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-green">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value green" id="summaryOutput">--</div>
+          <div class="kpi-label">总产出量</div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">总回收量</span>
-            <span class="summary-metric-value" id="summaryRecycling">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-teal">&#9851;</div>
+        <div class="kpi-info">
+          <div class="kpi-value green" id="summaryRecycling">--</div>
+          <div class="kpi-label">总回收量</div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">平均处理能力</span>
-            <span class="summary-metric-value" id="summaryCapacity">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue">&#9878;</div>
+        <div class="kpi-info">
+          <div class="kpi-value blue" id="summaryCapacity">--</div>
+          <div class="kpi-label">平均处理能力</div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">综合最佳站点</span>
-            <span class="summary-metric-value summary-metric-text" id="summaryTopStation">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-orange">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value orange kpi-value-text" id="summaryTopStation">--</div>
+          <div class="kpi-label">综合最佳站点</div>
         </div>
-      </section>
+      </div>
+    </div>
 
-      <section class="assessment-stage-grid">
-        <article class="card assessment-card ranking-card">
+    <div id="body">
+      <div id="colLeft">
+        <div class="card assessment-ranking-card">
           <div class="card-header"><span class="card-title">站点评分排序</span></div>
           <div class="card-body assessment-table-body" id="rankingTable"></div>
-        </article>
+        </div>
 
-        <article class="card assessment-card assessment-flow-card">
-          <div class="card-header">
-            <span class="card-title">辖区站点评估地图</span>
-            <span class="map-zoom-hint">北海辖区分片 + 站点覆盖</span>
-          </div>
-          <div class="card-body detail-page-chart-body">
-            <div class="flow-map-wrap">
-              <div class="map-legend assessment-map-legend">
-                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
-                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
-                <span class="map-legend-item"><i class="map-legend-block"></i>辖区分片</span>
-              </div>
-              <div id="assessmentFlowMap" class="detail-chart-host"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="card assessment-card side-analysis-card">
-          <div class="card-header"><span class="card-title">综合评分垂直柱状图</span></div>
-          <div class="card-body detail-page-chart-body">
-            <div id="assessmentVerticalChart" class="detail-chart-host"></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="assessment-bottom-grid">
-        <article class="card assessment-card">
+        <div class="card card-full assessment-horizontal-card">
           <div class="card-header"><span class="card-title">处理能力水平条形图</span></div>
           <div class="card-body detail-page-chart-body">
             <div id="assessmentHorizontalChart" class="detail-chart-host"></div>
           </div>
-        </article>
+        </div>
 
-        <article class="card assessment-card">
+        <div class="card card-full assessment-rate-card">
+          <div class="card-header"><span class="card-title">月度资源化利用率</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentRateChart" class="detail-chart-host"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="colCenter">
+        <div class="card" id="assessmentMapCard">
+          <div class="card-header">
+            <span class="card-title">辖区站点评估地图</span>
+            <span class="map-zoom-hint">北海辖区分片 + 站点覆盖 · 地图区域滚轮缩放</span>
+          </div>
+          <div class="card-body map-body">
+            <div class="map-legend assessment-map-legend">
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
+              <span class="map-legend-item"><i class="map-legend-block"></i>辖区分片</span>
+            </div>
+            <div class="flow-map-wrap assessment-map-wrap">
+              <div id="assessmentFlowMap" class="detail-chart-host"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-text assessment-trend-card">
+          <div class="card-header"><span class="card-title">近10日收集与回收趋势</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentTrendChart" class="detail-chart-host"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="colRight">
+        <div class="card card-full side-analysis-card">
+          <div class="card-header"><span class="card-title">综合评分垂直柱状图</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="assessmentVerticalChart" class="detail-chart-host"></div>
+          </div>
+        </div>
+
+        <div class="card card-full assessment-heatmap-card">
           <div class="card-header"><span class="card-title">站点评估热力图</span></div>
           <div class="card-body detail-page-chart-body">
             <div id="assessmentHeatmapChart" class="detail-chart-host"></div>
           </div>
-        </article>
+        </div>
 
-        <article class="card assessment-card">
-          <div class="card-header"><span class="card-title">区域站点树图</span></div>
+        <div class="card card-full assessment-tree-card">
+          <div class="card-header"><span class="card-title">区域能力概览</span></div>
           <div class="card-body detail-page-chart-body">
             <div id="assessmentTreeChart" class="detail-chart-host"></div>
           </div>
-        </article>
-      </section>
-    </main>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>

@@ -39,6 +39,10 @@
                 <span class="detail-kpi-value" id="detailDailyTons">--</span>
               </div>
               <div class="detail-kpi">
+                <span class="detail-kpi-label">设计能力</span>
+                <span class="detail-kpi-value" id="detailCapacity">--</span>
+              </div>
+              <div class="detail-kpi">
                 <span class="detail-kpi-label">运行时段</span>
                 <span class="detail-kpi-value" id="detailHours">--</span>
               </div>
@@ -50,16 +54,29 @@
                 <span class="detail-kpi-label">所属区域</span>
                 <span class="detail-kpi-value" id="detailDistrict">--</span>
               </div>
+              <div class="detail-kpi">
+                <span class="detail-kpi-label">分类品类</span>
+                <span class="detail-kpi-value" id="detailClassCount">--</span>
+              </div>
+            </div>
+
+            <div class="detail-load-block">
+              <div class="detail-load-head">
+                <span>站点负荷率</span>
+                <b id="detailLoadPct">--</b>
+              </div>
+              <div class="detail-load-track"><div id="detailLoadBar" class="detail-load-bar"></div></div>
+              <div class="detail-load-hint" id="detailLoadHint">--</div>
             </div>
           </div>
         </aside>
 
         <section class="station-chart-panel">
           <article class="card detail-page-card">
-          <div class="card-header"><span class="card-title">当前分类占比</span></div>
-          <div class="card-body detail-page-chart-body">
-            <div id="stationClassChart" class="detail-chart-host"></div>
-          </div>
+            <div class="card-header"><span class="card-title">当前分类占比</span></div>
+            <div class="card-body detail-page-chart-body">
+              <div id="stationClassChart" class="detail-chart-host"></div>
+            </div>
           </article>
 
           <article class="card detail-page-card detail-page-card-tall">

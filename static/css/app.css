@@ -1196,6 +1196,257 @@ body.detail-page {
   background: rgba(33, 150, 243, 0.10);
 }
 
+/* === Clickable station rows === */
+.station-table tr[data-station-id] {
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.station-table tr[data-station-id]:hover {
+  transform: translateX(3px);
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.10), rgba(255, 255, 255, 0.42));
+  box-shadow: inset 3px 0 0 #4CAF50;
+}
+.station-table tr[data-station-id]:hover td {
+  color: #2F4F33;
+}
+.station-action-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+.station-action-link {
+  display: inline-flex;
+  align-items: center;
+  color: #2E7D32;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.68;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+.station-table tr[data-station-id]:hover .station-action-link {
+  opacity: 1;
+  transform: translateX(3px);
+}
+tr.row-offline:hover {
+  background: linear-gradient(90deg, rgba(229, 57, 53, 0.10), rgba(255, 255, 255, 0.44));
+  box-shadow: inset 3px 0 0 #E53935;
+}
+
+/* === Assessment center dashboard layout === */
+.assessment-dashboard #body {
+  height: calc(100vh - 144px);
+  min-height: 720px;
+  align-items: stretch;
+}
+
+.assessment-dashboard #colLeft {
+  flex: 0.95;
+}
+
+.assessment-dashboard #colCenter {
+  flex: 1.75;
+}
+
+.assessment-dashboard #colRight {
+  flex: 1.05;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.assessment-dashboard #colLeft > .card,
+.assessment-dashboard #colCenter > .card,
+.assessment-dashboard #colRight > .card {
+  min-height: 0;
+}
+
+.assessment-dashboard .assessment-ranking-card {
+  flex: 1.15 1 0;
+}
+
+.assessment-dashboard .assessment-horizontal-card {
+  flex: 1.05 1 0;
+}
+
+.assessment-dashboard .assessment-rate-card {
+  flex: 0.86 1 0;
+}
+
+.assessment-dashboard #assessmentMapCard {
+  flex: 2.45 0 390px;
+  min-height: 390px;
+}
+
+.assessment-dashboard .assessment-trend-card {
+  flex: 1.18 0 300px;
+  min-height: 300px;
+}
+
+.assessment-dashboard #colRight .card-full {
+  flex: 1 1 0;
+  min-height: 170px;
+}
+
+.assessment-dashboard #colRight .side-analysis-card {
+  flex: 0.82 1 180px;
+  min-height: 180px;
+}
+
+.assessment-dashboard #colRight .assessment-heatmap-card {
+  flex: 1.22 1 250px;
+  min-height: 250px;
+}
+
+.assessment-dashboard #colRight .assessment-tree-card {
+  flex: 1.3 1 260px;
+  min-height: 260px;
+}
+
+.assessment-dashboard #colRight .assessment-ai-card {
+  flex: 1.25 1 0;
+}
+
+.assessment-dashboard .card-body {
+  min-height: 0;
+}
+
+.assessment-dashboard .detail-page-chart-body {
+  padding: 8px 10px 10px;
+  min-height: 0;
+}
+
+.assessment-dashboard .detail-chart-host {
+  min-height: 150px;
+}
+
+.assessment-dashboard #assessmentHorizontalChart,
+.assessment-dashboard #assessmentVerticalChart,
+.assessment-dashboard #assessmentTrendChart,
+.assessment-dashboard #assessmentRateChart {
+  min-height: 150px;
+}
+
+.assessment-dashboard #assessmentHeatmapChart {
+  min-height: 230px;
+}
+
+.assessment-dashboard #assessmentTreeChart {
+  min-height: 240px;
+}
+
+.assessment-dashboard #assessmentMapCard .card-body {
+  padding: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(76, 175, 80, 0.12), rgba(255, 248, 245, 0) 58%),
+    linear-gradient(180deg, #F8FCF8 0%, #EEF7F0 100%);
+}
+
+.assessment-dashboard .assessment-map-wrap,
+.assessment-dashboard #assessmentFlowMap {
+  min-height: 360px;
+}
+
+.assessment-dashboard .assessment-table-body {
+  padding: 8px 10px 10px;
+  overflow: auto;
+}
+
+.assessment-table-body .rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(46, 125, 50, 0.10);
+  color: #2E7D32;
+  font-weight: 800;
+}
+
+.assessment-dashboard .kpi-value-text {
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assessment-ai-summary-body {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.assessment-ai-summary-body .ai-summary-section {
+  gap: 7px;
+}
+
+.assessment-ai-summary-body .ai-item,
+.assessment-ai-summary-body .dispatch-item {
+  padding: 9px 10px;
+}
+
+.assessment-ai-summary-body .dispatch-item {
+  align-items: center;
+}
+
+/* === Station detail refinement === */
+.station-info-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,248,245,0.98)),
+    radial-gradient(circle at 0% 0%, rgba(76,175,80,0.14), transparent 42%);
+}
+.detail-status-badge.offline {
+  background: rgba(229, 57, 53, 0.10);
+  color: #C62828;
+}
+.detail-kpi {
+  border: 1px solid rgba(165, 214, 167, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.detail-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(92,118,96,0.10);
+}
+.detail-load-block {
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(232,245,233,0.72), rgba(227,242,253,0.42));
+  border: 1px solid rgba(129, 170, 135, 0.22);
+}
+.detail-load-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #6D6258;
+  margin-bottom: 9px;
+}
+.detail-load-head b {
+  font-size: 20px;
+  color: #2E7D32;
+}
+.detail-load-track {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(208, 216, 208, 0.75);
+  overflow: hidden;
+}
+.detail-load-bar {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  transition: width 0.8s ease;
+}
+.detail-load-bar.load-normal { background: linear-gradient(90deg, #81C784, #2E7D32); }
+.detail-load-bar.load-medium { background: linear-gradient(90deg, #FFD54F, #FB8C00); }
+.detail-load-bar.load-high { background: linear-gradient(90deg, #FFAB91, #E53935); }
+.detail-load-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6D6258;
+}
+
 /* === Leaflet overrides === */
 .leaflet-container {
   background: #E8F5E9 !important; font-family: inherit !important;
@@ -1233,8 +1484,36 @@ body.detail-page {
   .pipeline-tags {
     justify-content: flex-start;
   }
-  .assessment-summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .assessment-dashboard #body {
+    height: auto;
+    min-height: 680px;
+  }
+  .assessment-dashboard #colLeft {
+    flex: 0.92;
+  }
+  .assessment-dashboard #colCenter {
+    flex: 1.55;
+  }
+  .assessment-dashboard #colRight {
+    flex: 1;
+  }
+  .assessment-dashboard #assessmentMapCard,
+  .assessment-dashboard .assessment-map-wrap,
+  .assessment-dashboard #assessmentFlowMap {
+    min-height: 360px;
+  }
+  .assessment-dashboard #colRight .side-analysis-card {
+    flex-basis: 170px;
+    min-height: 170px;
+  }
+  .assessment-dashboard #colRight .assessment-heatmap-card,
+  .assessment-dashboard #colRight .assessment-tree-card {
+    flex-basis: 240px;
+    min-height: 240px;
+  }
+  .assessment-dashboard #assessmentHeatmapChart,
+  .assessment-dashboard #assessmentTreeChart {
+    min-height: 220px;
   }
   .assessment-stage-grid {
     grid-template-columns: 1fr 1fr;

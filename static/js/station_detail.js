@@ -18,11 +18,36 @@ function renderStationMeta(station) {
   document.getElementById("detailName").textContent = station.name;
   document.getElementById("detailAddress").textContent = `${station.district} · ${station.address}`;
   document.getElementById("detailCollector").textContent = `负责人：${station.collector}`;
-  document.getElementById("detailStatus").textContent = station.status === "online" ? "运行中" : "离线";
+
+  const statusBadge = document.getElementById("detailStatus");
+  const isOnline = station.status === "online";
+  statusBadge.textContent = isOnline ? "运行中" : "离线";
+  statusBadge.classList.toggle("offline", !isOnline);
+
   document.getElementById("detailDailyTons").textContent = `${station.daily_tons} 吨`;
+  document.getElementById("detailCapacity").textContent = `${station.capacity || "--"} 吨/日`;
   document.getElementById("detailHours").textContent = station.operation_hours;
   document.getElementById("detailEquipment").textContent = `${station.equipment_online}/${station.equipment_total}`;
   document.getElementById("detailDistrict").textContent = station.district;
+  document.getElementById("detailClassCount").textContent = `${station.classification?.length || 0} 类`;
+
+  const loadPct = Number(station.load_pct || 0);
+  const loadPctEl = document.getElementById("detailLoadPct");
+  const loadBar = document.getElementById("detailLoadBar");
+  const loadHint = document.getElementById("detailLoadHint");
+  loadPctEl.textContent = `${loadPct}%`;
+  loadBar.style.width = `${Math.min(100, loadPct)}%`;
+  loadBar.className = "detail-load-bar";
+  if (loadPct >= 85) {
+    loadBar.classList.add("load-high");
+    loadHint.textContent = "高负荷运行，建议关注转运频次与备用设备。";
+  } else if (loadPct >= 70) {
+    loadBar.classList.add("load-medium");
+    loadHint.textContent = "负荷偏高，建议保持设备巡检。";
+  } else {
+    loadBar.classList.add("load-normal");
+    loadHint.textContent = "负荷处于平稳区间，运行状态良好。";
+  }
 }
 
 

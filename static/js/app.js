@@ -340,12 +340,12 @@ function renderDistrictEfficiency(chartData) {
 
 function renderStationTable(stations) {
   const html = [
-    "<table><thead><tr><th>站点</th><th>位置</th><th>日收集量</th><th>状态</th></tr></thead><tbody>",
+    "<table><thead><tr><th>站点</th><th>位置</th><th>日收集量</th><th>状态</th><th>操作</th></tr></thead><tbody>",
     ...stations.map((station) => {
       const statusClass = station.status === "online" ? "status-online" : "status-offline";
       const statusText = station.status === "online" ? "运行中" : "离线";
       const rowClass = station.status === "offline" ? ' class="row-offline"' : "";
-      return `<tr data-station-id="${station.id}"${rowClass}><td>${station.name}</td><td>${station.address}</td><td>${station.daily_tons}吨</td><td><span class="station-status"><span class="status-dot ${statusClass}"></span>${statusText}</span></td></tr>`;
+      return `<tr data-station-id="${station.id}" title="点击查看 ${station.name} 详情"${rowClass}><td>${station.name}</td><td>${station.address}</td><td>${station.daily_tons}吨</td><td><span class="station-status"><span class="status-dot ${statusClass}"></span>${statusText}</span></td><td class="station-action-cell"><span class="station-action-link">查看详情 →</span></td></tr>`;
     }),
     "</tbody></table>",
   ].join("");
@@ -533,12 +533,12 @@ function renderDistrictSummary(districtName, stations) {
 
   const html = [
     summaryHtml,
-    "<table><thead><tr><th>站点</th><th>位置</th><th>日收集量</th><th>状态</th></tr></thead><tbody>",
+    "<table><thead><tr><th>站点</th><th>位置</th><th>日收集量</th><th>状态</th><th>操作</th></tr></thead><tbody>",
     ...stations.map((station) => {
       const statusClass = station.status === "online" ? "status-online" : "status-offline";
       const statusText = station.status === "online" ? "运行中" : "离线";
       const rowClass = station.status === "offline" ? ' class="row-offline"' : "";
-      return `<tr data-station-id="${station.id}"${rowClass}><td>${station.name}</td><td>${station.address}</td><td>${station.daily_tons}吨</td><td><span class="station-status"><span class="status-dot ${statusClass}"></span>${statusText}</span></td></tr>`;
+      return `<tr data-station-id="${station.id}" title="点击查看 ${station.name} 详情"${rowClass}><td>${station.name}</td><td>${station.address}</td><td>${station.daily_tons}吨</td><td><span class="station-status"><span class="status-dot ${statusClass}"></span>${statusText}</span></td><td class="station-action-cell"><span class="station-action-link">查看详情 →</span></td></tr>`;
     }),
     "</tbody></table>",
   ].join("");
@@ -1104,11 +1104,6 @@ async function bootstrap() {
   renderCapacityAlerts(dashboardPayload.capacity_alerts);
   renderEquipment(dashboardPayload.equipment);
   renderTransport(dashboardPayload.transport);
-  renderDailyTrend(dashboardPayload.charts.daily_trend);
-  renderMonthlyRate(dashboardPayload.charts.monthly_rate);
-  renderConclusions(dashboardPayload.analysis.conclusions);
-  renderAiAlerts(dashboardPayload.ai_alerts);
-  renderAiDispatch(dashboardPayload.ai_dispatch);
   renderMap(dashboardPayload.stations);
 }
 
