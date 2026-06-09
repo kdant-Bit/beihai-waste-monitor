@@ -7,7 +7,6 @@ let assessmentDistrictLabels = null;
 let assessmentCityLayer = null;
 let assessmentBaseLayer = null;
 let assessmentCanvasRenderer = null;
-let flowOverlayFrame = null;
 
 function getAssessmentChart(domId) {
   const dom = document.getElementById(domId);
@@ -398,42 +397,6 @@ function ensureAssessmentMap() {
   assessmentFlowMap.on("zoomend", () => {
     toggleLayerVisibility(assessmentDistrictLabels, true);
     toggleLayerVisibility(assessmentFlowMarkers, true);
-    redrawFlowOverlay();
-  });
-  assessmentFlowMap.on("moveend", redrawFlowOverlay);
-}
-
-function drawFlowOverlay(chartData) {
-  const svg = document.getElementById("assessmentFlowSvg");
-  svg.innerHTML = "";
-
-  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  group.setAttribute("class", "flow-lines-group");
-  svg.appendChild(group);
-
-  chartData.lines.forEach((line) => {
-    const start = assessmentFlowMap.latLngToContainerPoint([line.coords[0][1], line.coords[0][0]]);
-    const end = assessmentFlowMap.latLngToContainerPoint([line.coords[1][1], line.coords[1][0]]);
-    const midX = (start.x + end.x) / 2;
-    const midY = (start.y + end.y) / 2 - 32;
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`);
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "#2E7D32");
-    path.setAttribute("stroke-width", "2.2");
-    path.setAttribute("stroke-opacity", "0.85");
-    path.setAttribute("stroke-linecap", "round");
-    group.appendChild(path);
-
-    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", String(midX));
-    label.setAttribute("y", String(midY - 6));
-    label.setAttribute("fill", "#5D4D40");
-    label.setAttribute("font-size", "10");
-    label.setAttribute("text-anchor", "middle");
-    label.textContent = `${line.from} ${line.value} 吨`;
-    group.appendChild(label);
   });
 }
 
@@ -469,21 +432,7 @@ async function renderFlow(chartData) {
   });
 
   assessmentFlowMap.fitBounds(assessmentDistrictLayer.getBounds(), { padding: [18, 18] });
-  drawFlowOverlay(chartData);
   setTimeout(() => assessmentFlowMap.invalidateSize(), 50);
-}
-
-function redrawFlowOverlay() {
-  if (!assessmentFlowMap || !assessmentFlowData) {
-    return;
-  }
-  if (flowOverlayFrame) {
-    cancelAnimationFrame(flowOverlayFrame);
-  }
-  flowOverlayFrame = requestAnimationFrame(() => {
-    drawFlowOverlay(assessmentFlowData);
-    flowOverlayFrame = null;
-  });
 }
 
 async function bootstrapAssessment() {
@@ -506,7 +455,6 @@ window.addEventListener("resize", () => {
   Object.values(assessmentCharts).forEach((chart) => chart.resize());
   if (assessmentFlowMap) {
     assessmentFlowMap.invalidateSize();
-    redrawFlowOverlay();
   }
 });
 

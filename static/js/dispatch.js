@@ -9,6 +9,16 @@ let dispatchMarkerLayer = null;
 let dispatchFlowData = null;
 let dispatchFlowFrame = null;
 
+function updateDispatchClock() {
+  const now = new Date();
+  const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  const text = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${days[now.getDay()]} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+  const host = document.getElementById("dispatchNowTime");
+  if (host) {
+    host.textContent = text;
+  }
+}
+
 function getDispatchChart(domId) {
   const dom = document.getElementById(domId);
   if (!dom) {
@@ -205,11 +215,10 @@ function renderDispatchMarkers(points) {
     marker.bindTooltip(buildDispatchTooltip(point), {
       direction: "top",
       offset: [0, -12],
-      opacity: 1,
+      opacity: 0.98,
       className: "station-hover-tooltip",
+      sticky: true,
     });
-    marker.on("mouseover", () => marker.openTooltip());
-    marker.on("mouseout", () => marker.closeTooltip());
   });
 }
 
@@ -224,9 +233,12 @@ function ensureDispatchMap() {
     zoomControl: true,
     attributionControl: false,
     preferCanvas: true,
+    scrollWheelZoom: true,
     zoomAnimation: false,
     fadeAnimation: false,
     markerZoomAnimation: false,
+    wheelDebounceTime: 80,
+    wheelPxPerZoomLevel: 120,
   });
   dispatchCanvasRenderer = L.canvas({ padding: 0.5 });
   dispatchBaseLayer = createLightRoadLayer();
@@ -528,6 +540,9 @@ function renderStations(stations) {
 }
 
 async function bootstrapDispatch() {
+  updateDispatchClock();
+  setInterval(updateDispatchClock, 1000);
+
   const response = await fetch("/api/dispatch");
   if (!response.ok) {
     throw new Error("Failed to load dispatch data.");

@@ -4,113 +4,121 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
   <title>调度中心</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
 </head>
-<body class="detail-page">
-  <div class="detail-layout dispatch-layout">
-    <header class="detail-page-header">
-      <div>
-        <div class="detail-page-kicker">北海市环保调度中枢</div>
-        <h1 id="dispatchTitle">调度中心</h1>
-        <div class="header-center subtitle" id="dispatchSubtitle">AI 预警、调度建议与未来 24 小时预测联动看板</div>
+<body>
+  <div id="dashboard" class="dispatch-dashboard">
+    <header id="header">
+      <div class="header-left">
+        <span class="header-dot"></span>
+        <span class="header-city">北海市</span>
+        <a class="nav-link" href="/">首页</a>
+        <a class="nav-link" href="/assessment">评估中心</a>
+        <a class="nav-link" href="/dispatch">调度中心</a>
       </div>
-      <div class="detail-header-links">
-        <a class="back-link" href="/assessment">评估中心</a>
-        <a class="back-link" href="/">返回首页</a>
+      <div class="header-center">
+        <h1 id="dispatchTitle">北海市环保调度中心</h1>
+        <div class="subtitle" id="dispatchSubtitle">AI 预警、调度建议与未来 24 小时预测联动看板</div>
       </div>
+      <div class="header-right"><span id="dispatchNowTime"></span></div>
     </header>
 
-    <main class="detail-page-main">
-      <section class="assessment-summary-grid dispatch-summary-grid">
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">AI 预警数</span>
-            <span class="summary-metric-value" id="dispatchWarnings">--</span>
-          </div>
+    <div id="kpiRow">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-orange">&#9888;</div>
+        <div class="kpi-info">
+          <div class="kpi-value orange" id="dispatchWarnings">0</div>
+          <div class="kpi-label">AI 预警数<span class="metric-unit"> 条</span></div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">紧急事项</span>
-            <span class="summary-metric-value" id="dispatchUrgent">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue">&#9733;</div>
+        <div class="kpi-info">
+          <div class="kpi-value blue" id="dispatchUrgent">0</div>
+          <div class="kpi-label">紧急事项<span class="metric-unit"> 项</span></div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">待执行建议</span>
-            <span class="summary-metric-value" id="dispatchActions">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-teal">&#9878;</div>
+        <div class="kpi-info">
+          <div class="kpi-value green" id="dispatchActions">0</div>
+          <div class="kpi-label">待执行建议<span class="metric-unit"> 项</span></div>
         </div>
-        <div class="card summary-metric-card">
-          <div class="card-body summary-metric-body">
-            <span class="detail-kpi-label">峰值时段</span>
-            <span class="summary-metric-value summary-metric-text" id="dispatchPeak">--</span>
-          </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-green">&#9711;</div>
+        <div class="kpi-info">
+          <div class="kpi-value" id="dispatchPeak">--</div>
+          <div class="kpi-label">峰值时段 / 负荷</div>
         </div>
-      </section>
+      </div>
+    </div>
 
-      <section class="dispatch-stage-grid">
-        <article class="card dispatch-main-card">
+    <div id="body">
+      <div id="colLeft">
+        <div class="card card-full">
           <div class="card-header"><span class="card-title">AI 预警中心</span></div>
           <div class="card-body ai-body" id="dispatchAlerts"></div>
-        </article>
-
-        <article class="card dispatch-main-card">
+        </div>
+        <div class="card card-full">
           <div class="card-header"><span class="card-title">AI 调度建议</span></div>
           <div class="card-body ai-body" id="dispatchRecommendations"></div>
-        </article>
-
-        <article class="card dispatch-side-card">
+        </div>
+        <div class="card card-full">
           <div class="card-header"><span class="card-title">处置摘要</span></div>
           <div class="card-body dispatch-side-body" id="dispatchOverview"></div>
-        </article>
-      </section>
+        </div>
+      </div>
 
-      <section class="dispatch-bottom-grid">
-        <article class="card dispatch-chart-card">
-          <div class="card-header"><span class="card-title">未来 24 小时预测</span></div>
-          <div class="card-body detail-page-chart-body">
-            <div id="dispatchForecastChart" class="detail-chart-host"></div>
+      <div id="colCenter">
+        <div class="card" id="dispatchMapCard">
+          <div class="card-header">
+            <span class="card-title">站点调度地图</span>
+            <span class="map-zoom-hint">辖区分片 + 调度箭头 · 地图区域滚轮缩放</span>
           </div>
-        </article>
-
-        <article class="card dispatch-chart-card">
-          <div class="card-header"><span class="card-title">运力效率</span></div>
-          <div class="card-body detail-page-chart-body">
-            <div id="dispatchTransportChart" class="detail-chart-host"></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="dispatch-bottom-grid">
-        <article class="card dispatch-map-card">
-          <div class="card-header"><span class="card-title">站点调度地图</span></div>
-          <div class="card-body detail-page-chart-body">
+          <div class="card-body map-body">
+            <div class="map-legend assessment-map-legend">
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
+              <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
+              <span class="map-legend-item"><i class="map-legend-block"></i>辖区分片</span>
+            </div>
             <div class="flow-map-wrap dispatch-map-wrap">
-              <div class="map-legend assessment-map-legend">
-                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-online"></i>在线站点</span>
-                <span class="map-legend-item"><i class="map-legend-dot map-legend-dot-offline"></i>离线站点</span>
-                <span class="map-legend-item"><i class="map-legend-block"></i>辖区分片</span>
-              </div>
               <div id="dispatchMap" class="detail-chart-host"></div>
               <svg id="dispatchMapSvg" class="assessment-flow-svg"></svg>
             </div>
           </div>
-        </article>
+        </div>
 
-        <article class="card dispatch-chart-card">
+        <div class="card card-text dispatch-forecast-card">
+          <div class="card-header"><span class="card-title">未来 24 小时预测</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="dispatchForecastChart" class="detail-chart-host"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="colRight">
+        <div class="card">
           <div class="card-header"><span class="card-title">容量预警清单</span></div>
           <div class="card-body capacity-body" id="dispatchCapacity"></div>
-        </article>
-
-        <article class="card dispatch-chart-card">
+        </div>
+        <div class="card card-full equipment-card">
+          <div class="card-header"><span class="card-title">运力效率</span></div>
+          <div class="card-body detail-page-chart-body">
+            <div id="dispatchTransportChart" class="detail-chart-host"></div>
+          </div>
+        </div>
+        <div class="card card-full">
           <div class="card-header"><span class="card-title">重点站点联动</span></div>
           <div class="card-body dispatch-station-body" id="dispatchStations"></div>
-        </article>
-      </section>
-    </main>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
   <script src="{{ url_for('static', filename='js/dispatch.js') }}"></script>
 </body>
 </html>
