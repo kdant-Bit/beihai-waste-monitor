@@ -7,7 +7,7 @@
 - 调度中心
 - 站点详情页
 
-项目当前默认使用内置静态示例数据运行，同时已经预留了“接入真实数据”的后端适配层，后续可以无缝切换为：
+项目当前默认读取 `data/processed/*.json` 中的处理后数据运行；这些数据由 `scripts/preprocess_data.py` 从 `data/*.json` 原始/参考数据清洗、补齐和聚合生成。同时项目仍然预留了“接入真实数据”的后端适配层，后续可以无缝切换为：
 
 - 本地 JSON 覆盖数据
 - 第三方 HTTP 实时接口
@@ -16,13 +16,35 @@
 
 ## 启动方式
 
-推荐在项目目录创建独立虚拟环境：
+### 使用本机 Conda 环境
+
+当前项目路径为 `E:\Claude\kdant`，可直接使用指定环境运行：
 
 ```powershell
-cd D:\codex-code\beihai-waste-monitor
+cd E:\Claude\kdant
+D:\anaconda3\envs\env\python.exe -m pip install -r requirements.txt
+D:\anaconda3\envs\env\python.exe scripts\preprocess_data.py
+D:\anaconda3\envs\env\python.exe app.py
+```
+
+其中 `scripts\preprocess_data.py` 用于生成：
+
+- `data/processed/dashboard.json`
+- `data/processed/assessment.json`
+- `data/processed/dispatch.json`
+
+首次运行或修改 `data/*.json` 后，建议先执行一次预处理脚本。
+
+### 使用普通 Python/虚拟环境
+
+也可以在项目目录创建独立虚拟环境：
+
+```powershell
+cd 项目源码目录
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+python scripts\preprocess_data.py
 python app.py
 ```
 
@@ -80,7 +102,7 @@ http://127.0.0.1:5000/
 
 ### 1. `static` 模式
 
-默认模式，直接使用 `app.py` 中内置的模拟数据。
+默认模式，读取 `data/processed/*.json` 中的处理后数据。处理后数据由 `scripts/preprocess_data.py` 从 `data/*.json` 原始/参考数据清洗、补齐、聚合生成。
 
 适合：
 

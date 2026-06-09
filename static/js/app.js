@@ -364,7 +364,7 @@ function renderMetrics(metrics) {
   animateValue(elCollect, metrics.daily_collect, "");
   const trendCollect = document.getElementById("metricCollectTrend");
   if (trendCollect) {
-    const arrow = metrics.daily_collect_change >= 0 ? "uarr;" : "darr;";
+    const arrow = metrics.daily_collect_change >= 0 ? "↑" : "↓";
     const cls = metrics.daily_collect_change >= 0 ? "trend-up" : "trend-down";
     trendCollect.innerHTML = "<span class=\"" + cls + "\">" + arrow + " " + Math.abs(metrics.daily_collect_change) + (metrics.daily_collect_pct != null ? " (" + Number(metrics.daily_collect_pct).toFixed(1) + "%)" : "") + "</span>";
     trendCollect.title = "vs 昨日" + metrics.daily_collect_yesterday + " 吨";
@@ -375,7 +375,7 @@ function renderMetrics(metrics) {
   animateValue(elRate, metrics.utilization_rate, "%");
   const trendRate = document.getElementById("metricRateTrend");
   if (trendRate) {
-    const arrow = metrics.utilization_rate_change >= 0 ? "uarr;" : "darr;";
+    const arrow = metrics.utilization_rate_change >= 0 ? "↑" : "↓";
     const cls = metrics.utilization_rate_change >= 0 ? "trend-up" : "trend-down";
     trendRate.innerHTML = "<span class=\"" + cls + "\">" + arrow + " " + Math.abs(metrics.utilization_rate_change) + "pp</span>";
     trendRate.title = "目标: " + metrics.utilization_rate_target + "%, vs 昨日 " + metrics.utilization_rate_yesterday + "%";
@@ -1098,13 +1098,17 @@ async function bootstrap() {
   renderMetrics(dashboardPayload.metrics);
   renderWasteClass(dashboardPayload.charts.waste_class);
   renderDistrictSummary("", dashboardPayload.stations);
-  renderConclusions(dashboardPayload.analysis.conclusions);
   renderOverviewList(dashboardPayload.stations);
   renderEnvMonitor(dashboardPayload.environment);
   renderComplaints(dashboardPayload.complaints);
   renderCapacityAlerts(dashboardPayload.capacity_alerts);
   renderEquipment(dashboardPayload.equipment);
   renderTransport(dashboardPayload.transport);
+  renderDailyTrend(dashboardPayload.charts.daily_trend);
+  renderMonthlyRate(dashboardPayload.charts.monthly_rate);
+  renderConclusions(dashboardPayload.analysis.conclusions);
+  renderAiAlerts(dashboardPayload.ai_alerts);
+  renderAiDispatch(dashboardPayload.ai_dispatch);
   renderMap(dashboardPayload.stations);
 }
 

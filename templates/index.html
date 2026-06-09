@@ -30,7 +30,7 @@
         <div class="kpi-icon kpi-icon-green">&#9733;</div>
         <div class="kpi-info">
           <div class="kpi-value" id="metricCollect">0</div>
-          <div class="kpi-label">环保治理综合指数<span class="metric-unit"> 分</span></div>
+          <div class="kpi-label">今日垃圾收集量<span class="metric-unit"> 吨</span></div>
           <div class="metric-trend" id="metricCollectTrend"></div>
         </div>
       </div>
@@ -121,6 +121,28 @@
         </div>
       </div>
     </div>
+
+    <section id="analysisRow">
+      <div class="card analysis-chart-card">
+        <div class="card-header"><span class="card-title">近10日收集与回收趋势</span></div>
+        <div class="card-body"><div id="chartTrend" class="chart-host"></div></div>
+      </div>
+      <div class="card analysis-chart-card">
+        <div class="card-header"><span class="card-title">月度资源化利用率</span></div>
+        <div class="card-body"><div id="chartRate" class="chart-host"></div></div>
+      </div>
+      <div class="card analysis-text-card">
+        <div class="card-header"><span class="card-title">数据分析结论</span></div>
+        <div class="card-body analysis-list" id="analysisList"></div>
+      </div>
+      <div class="card analysis-ai-card">
+        <div class="card-header"><span class="card-title">AI 预警与调度摘要</span></div>
+        <div class="card-body ai-summary-body">
+          <div id="aiAlerts" class="ai-summary-section"></div>
+          <div id="aiDispatch" class="ai-summary-section"></div>
+        </div>
+      </div>
+    </section>
 
   </div>
 

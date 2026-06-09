@@ -1,0 +1,888 @@
+{
+  "meta": {
+    "title": "北海市环保调度中心",
+    "subtitle": "AI 预警、调度建议与未来 24 小时预测联动看板"
+  },
+  "summary": {
+    "warning_count": 3,
+    "urgent_count": 2,
+    "dispatch_count": 3,
+    "peak_hour": "12:00",
+    "peak_load": 120,
+    "top_action": "增派 2 辆运输车至机场物流园站"
+  },
+  "alerts": {
+    "title": "AI预警中心",
+    "predictions": [
+      {
+        "level": "danger",
+        "message": "合浦站预计明日垃圾增长 15%，建议提前增派运输车辆",
+        "probability": 87
+      },
+      {
+        "level": "warning",
+        "message": "银海区未来 3 天有暴雨预测，渗滤液处理设备需检查",
+        "probability": 72
+      },
+      {
+        "level": "info",
+        "message": "厨余垃圾占比持续上升，分类质量趋好",
+        "probability": 65
+      }
+    ]
+  },
+  "dispatch": {
+    "title": "AI调度建议",
+    "recommendations": [
+      {
+        "priority": 1,
+        "action": "增派 2 辆运输车至机场物流园站",
+        "reason": "负荷接近 92%，预计峰值时段 14:00-16:00",
+        "eta": "30分钟内"
+      },
+      {
+        "priority": 2,
+        "action": "合浦站维修队即刻出发",
+        "reason": "离线影响区域监测覆盖",
+        "eta": "已通知"
+      },
+      {
+        "priority": 3,
+        "action": "银滩站增加可回收物分拣班次",
+        "reason": "可回收物占比低于市均",
+        "eta": "明日执行"
+      }
+    ]
+  },
+  "forecast": {
+    "title": "未来 24 小时预测",
+    "hours": [
+      "00:00",
+      "04:00",
+      "08:00",
+      "12:00",
+      "16:00",
+      "20:00",
+      "24:00"
+    ],
+    "collection_forecast": [
+      28,
+      22,
+      85,
+      120,
+      105,
+      68,
+      35
+    ],
+    "recycling_forecast": [
+      10,
+      8,
+      32,
+      45,
+      40,
+      25,
+      13
+    ],
+    "confidence_upper": [
+      35,
+      28,
+      98,
+      138,
+      118,
+      78,
+      42
+    ],
+    "confidence_lower": [
+      21,
+      16,
+      72,
+      102,
+      92,
+      58,
+      28
+    ]
+  },
+  "capacity_alerts": {
+    "title": "容量预警",
+    "alerts": [
+      {
+        "station": "工业园区站",
+        "level": "high",
+        "load_pct": 89,
+        "message": "负荷达 89%，建议增加转运频次"
+      },
+      {
+        "station": "老城转运站",
+        "level": "high",
+        "load_pct": 90,
+        "message": "负荷达 90%，建议增加转运频次"
+      },
+      {
+        "station": "北部湾广场站",
+        "level": "medium",
+        "load_pct": 80,
+        "message": "负荷偏高，关注设备状态"
+      }
+    ]
+  },
+  "transport": {
+    "avg_time_min": 42,
+    "avg_time_yesterday": 45,
+    "on_time_rate": 91,
+    "on_time_yesterday": 88,
+    "routes": [
+      "海城线",
+      "银海线",
+      "铁山港线",
+      "合浦线"
+    ],
+    "efficiency": [
+      94,
+      88,
+      85,
+      90
+    ]
+  },
+  "environment": {
+    "title": "环境监测分析",
+    "air_quality": {
+      "aqi": 72,
+      "level": "良",
+      "pm25": 38,
+      "pm10": 62,
+      "trend": "stable"
+    },
+    "emission": {
+      "title": "垃圾处理排放监测",
+      "categories": [
+        "CO2",
+        "CH4",
+        "NOx",
+        "SO2"
+      ],
+      "values": [
+        320,
+        85,
+        42,
+        18
+      ],
+      "limits": [
+        400,
+        120,
+        80,
+        50
+      ]
+    },
+    "leachate": {
+      "daily_tons": 85,
+      "treatment_rate": 96,
+      "status": "normal"
+    }
+  },
+  "stations": [
+    {
+      "id": "beibuwan-square",
+      "name": "北部湾广场站",
+      "address": "海城区北部湾中路",
+      "collector": "李建国",
+      "daily_tons": 120,
+      "status": "online",
+      "lat": 21.48,
+      "lng": 109.12,
+      "district": "海城区",
+      "operation_hours": "06:00 - 22:00",
+      "equipment_online": 8,
+      "equipment_total": 8,
+      "capacity": 150,
+      "load_pct": 80,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 54
+        },
+        {
+          "name": "其他垃圾",
+          "value": 39
+        },
+        {
+          "name": "可回收物",
+          "value": 33
+        },
+        {
+          "name": "有害垃圾",
+          "value": 8
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          112,
+          115,
+          118,
+          121,
+          124,
+          119,
+          120
+        ]
+      }
+    },
+    {
+      "id": "yintan",
+      "name": "银滩站",
+      "address": "银海区银滩大道",
+      "collector": "张海明",
+      "daily_tons": 95,
+      "status": "online",
+      "lat": 21.42,
+      "lng": 109.15,
+      "district": "银海区",
+      "operation_hours": "07:00 - 22:00",
+      "equipment_online": 6,
+      "equipment_total": 7,
+      "capacity": 132,
+      "load_pct": 72,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 46
+        },
+        {
+          "name": "其他垃圾",
+          "value": 35
+        },
+        {
+          "name": "可回收物",
+          "value": 30
+        },
+        {
+          "name": "有害垃圾",
+          "value": 9
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          88,
+          91,
+          93,
+          96,
+          98,
+          94,
+          95
+        ]
+      }
+    },
+    {
+      "id": "qiaogang",
+      "name": "侨港站",
+      "address": "银海区侨港镇",
+      "collector": "王芳",
+      "daily_tons": 88,
+      "status": "online",
+      "lat": 21.44,
+      "lng": 109.11,
+      "district": "银海区",
+      "operation_hours": "06:30 - 21:30",
+      "equipment_online": 5,
+      "equipment_total": 6,
+      "capacity": 124,
+      "load_pct": 71,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 42
+        },
+        {
+          "name": "其他垃圾",
+          "value": 33
+        },
+        {
+          "name": "可回收物",
+          "value": 27
+        },
+        {
+          "name": "有害垃圾",
+          "value": 8
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          82,
+          84,
+          86,
+          89,
+          91,
+          87,
+          88
+        ]
+      }
+    },
+    {
+      "id": "tieshangang",
+      "name": "铁山港站",
+      "address": "铁山港区兴港路",
+      "collector": "陈志强",
+      "daily_tons": 65,
+      "status": "online",
+      "lat": 21.5,
+      "lng": 109.42,
+      "district": "铁山港区",
+      "operation_hours": "07:30 - 21:00",
+      "equipment_online": 4,
+      "equipment_total": 5,
+      "capacity": 118,
+      "load_pct": 55,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 36
+        },
+        {
+          "name": "其他垃圾",
+          "value": 29
+        },
+        {
+          "name": "可回收物",
+          "value": 25
+        },
+        {
+          "name": "有害垃圾",
+          "value": 8
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          60,
+          62,
+          64,
+          66,
+          67,
+          64,
+          65
+        ]
+      }
+    },
+    {
+      "id": "hepu",
+      "name": "合浦站",
+      "address": "合浦县廉州大道",
+      "collector": "赵永刚",
+      "daily_tons": 72,
+      "status": "offline",
+      "lat": 21.66,
+      "lng": 109.2,
+      "district": "合浦县",
+      "operation_hours": "08:00 - 20:00",
+      "equipment_online": 3,
+      "equipment_total": 5,
+      "capacity": 110,
+      "load_pct": 65,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 26
+        },
+        {
+          "name": "其他垃圾",
+          "value": 21
+        },
+        {
+          "name": "可回收物",
+          "value": 18
+        },
+        {
+          "name": "有害垃圾",
+          "value": 7
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          67,
+          69,
+          71,
+          73,
+          0,
+          0,
+          72
+        ]
+      }
+    },
+    {
+      "id": "industrial-park",
+      "name": "工业园区站",
+      "address": "海城区北海大道东",
+      "collector": "刘伟",
+      "daily_tons": 150,
+      "status": "online",
+      "lat": 21.52,
+      "lng": 109.17,
+      "district": "海城区",
+      "operation_hours": "24小时运行",
+      "equipment_online": 10,
+      "equipment_total": 10,
+      "capacity": 168,
+      "load_pct": 89,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 58
+        },
+        {
+          "name": "其他垃圾",
+          "value": 44
+        },
+        {
+          "name": "可回收物",
+          "value": 37
+        },
+        {
+          "name": "有害垃圾",
+          "value": 11
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          140,
+          144,
+          147,
+          152,
+          154,
+          148,
+          150
+        ]
+      }
+    },
+    {
+      "id": "old-town-transfer",
+      "name": "老城转运站",
+      "address": "海城区四川南路",
+      "collector": "周明辉",
+      "daily_tons": 140,
+      "status": "online",
+      "lat": 21.47,
+      "lng": 109.1,
+      "district": "海城区",
+      "operation_hours": "06:00 - 23:00",
+      "equipment_online": 9,
+      "equipment_total": 9,
+      "capacity": 155,
+      "load_pct": 90,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 55
+        },
+        {
+          "name": "其他垃圾",
+          "value": 43
+        },
+        {
+          "name": "可回收物",
+          "value": 33
+        },
+        {
+          "name": "有害垃圾",
+          "value": 9
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          130,
+          134,
+          137,
+          141,
+          144,
+          139,
+          140
+        ]
+      }
+    },
+    {
+      "id": "yintan-east",
+      "name": "银滩东区站",
+      "address": "银海区金海岸大道",
+      "collector": "梁晓云",
+      "daily_tons": 124,
+      "status": "online",
+      "lat": 21.41,
+      "lng": 109.2,
+      "district": "银海区",
+      "operation_hours": "07:00 - 22:30",
+      "equipment_online": 7,
+      "equipment_total": 7,
+      "capacity": 138,
+      "load_pct": 90,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 48
+        },
+        {
+          "name": "其他垃圾",
+          "value": 37
+        },
+        {
+          "name": "可回收物",
+          "value": 30
+        },
+        {
+          "name": "有害垃圾",
+          "value": 9
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          115,
+          119,
+          122,
+          125,
+          128,
+          123,
+          124
+        ]
+      }
+    },
+    {
+      "id": "airport-logistics",
+      "name": "机场物流园站",
+      "address": "合浦县北海大道西延线",
+      "collector": "冯建平",
+      "daily_tons": 170,
+      "status": "online",
+      "lat": 21.54,
+      "lng": 109.25,
+      "district": "合浦县",
+      "operation_hours": "24小时运行",
+      "equipment_online": 11,
+      "equipment_total": 12,
+      "capacity": 185,
+      "load_pct": 92,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 61
+        },
+        {
+          "name": "其他垃圾",
+          "value": 58
+        },
+        {
+          "name": "可回收物",
+          "value": 40
+        },
+        {
+          "name": "有害垃圾",
+          "value": 11
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          158,
+          163,
+          167,
+          172,
+          175,
+          168,
+          170
+        ]
+      }
+    },
+    {
+      "id": "lianzhou-west",
+      "name": "廉州西片区站",
+      "address": "合浦县廉州镇西环路",
+      "collector": "黄淑敏",
+      "daily_tons": 167,
+      "status": "online",
+      "lat": 21.67,
+      "lng": 109.16,
+      "district": "合浦县",
+      "operation_hours": "06:30 - 22:00",
+      "equipment_online": 8,
+      "equipment_total": 9,
+      "capacity": 178,
+      "load_pct": 94,
+      "classification": [
+        {
+          "name": "厨余垃圾",
+          "value": 64
+        },
+        {
+          "name": "其他垃圾",
+          "value": 51
+        },
+        {
+          "name": "可回收物",
+          "value": 41
+        },
+        {
+          "name": "有害垃圾",
+          "value": 11
+        }
+      ],
+      "weekly_trend": {
+        "dates": [
+          "5/23",
+          "5/24",
+          "5/25",
+          "5/26",
+          "5/27",
+          "5/28",
+          "5/29"
+        ],
+        "values": [
+          155,
+          160,
+          164,
+          169,
+          172,
+          165,
+          167
+        ]
+      }
+    }
+  ],
+  "dispatch_map": {
+    "points": [
+      {
+        "id": "beibuwan-square",
+        "name": "北部湾广场站",
+        "district": "海城区",
+        "status": "online",
+        "daily_tons": 120,
+        "lat": 21.48,
+        "lng": 109.12,
+        "load_pct": 80,
+        "alert_level": "medium"
+      },
+      {
+        "id": "yintan",
+        "name": "银滩站",
+        "district": "银海区",
+        "status": "online",
+        "daily_tons": 95,
+        "lat": 21.42,
+        "lng": 109.15,
+        "load_pct": 72,
+        "alert_level": "normal"
+      },
+      {
+        "id": "qiaogang",
+        "name": "侨港站",
+        "district": "银海区",
+        "status": "online",
+        "daily_tons": 88,
+        "lat": 21.44,
+        "lng": 109.11,
+        "load_pct": 71,
+        "alert_level": "normal"
+      },
+      {
+        "id": "tieshangang",
+        "name": "铁山港站",
+        "district": "铁山港区",
+        "status": "online",
+        "daily_tons": 65,
+        "lat": 21.5,
+        "lng": 109.42,
+        "load_pct": 55,
+        "alert_level": "normal"
+      },
+      {
+        "id": "hepu",
+        "name": "合浦站",
+        "district": "合浦县",
+        "status": "offline",
+        "daily_tons": 72,
+        "lat": 21.66,
+        "lng": 109.2,
+        "load_pct": 65,
+        "alert_level": "normal"
+      },
+      {
+        "id": "industrial-park",
+        "name": "工业园区站",
+        "district": "海城区",
+        "status": "online",
+        "daily_tons": 150,
+        "lat": 21.52,
+        "lng": 109.17,
+        "load_pct": 89,
+        "alert_level": "high"
+      },
+      {
+        "id": "old-town-transfer",
+        "name": "老城转运站",
+        "district": "海城区",
+        "status": "online",
+        "daily_tons": 140,
+        "lat": 21.47,
+        "lng": 109.1,
+        "load_pct": 90,
+        "alert_level": "high"
+      },
+      {
+        "id": "yintan-east",
+        "name": "银滩东区站",
+        "district": "银海区",
+        "status": "online",
+        "daily_tons": 124,
+        "lat": 21.41,
+        "lng": 109.2,
+        "load_pct": 90,
+        "alert_level": "normal"
+      },
+      {
+        "id": "airport-logistics",
+        "name": "机场物流园站",
+        "district": "合浦县",
+        "status": "online",
+        "daily_tons": 170,
+        "lat": 21.54,
+        "lng": 109.25,
+        "load_pct": 92,
+        "alert_level": "normal"
+      },
+      {
+        "id": "lianzhou-west",
+        "name": "廉州西片区站",
+        "district": "合浦县",
+        "status": "online",
+        "daily_tons": 167,
+        "lat": 21.67,
+        "lng": 109.16,
+        "load_pct": 94,
+        "alert_level": "normal"
+      }
+    ],
+    "links": [
+      {
+        "from": "机场物流园站",
+        "to": "北部湾广场站",
+        "volume": 18,
+        "reason": "高负荷分流",
+        "from_load_pct": 92,
+        "to_spare_pct": 24,
+        "from_coord": [
+          109.25,
+          21.54
+        ],
+        "to_coord": [
+          109.12,
+          21.48
+        ]
+      },
+      {
+        "from": "机场物流园站",
+        "to": "老城转运站",
+        "volume": 14,
+        "reason": "转运压力缓释",
+        "from_load_pct": 92,
+        "to_spare_pct": 18,
+        "from_coord": [
+          109.25,
+          21.54
+        ],
+        "to_coord": [
+          109.1,
+          21.47
+        ]
+      },
+      {
+        "from": "老城转运站",
+        "to": "银滩站",
+        "volume": 10,
+        "reason": "跨区调度补位",
+        "from_load_pct": 78,
+        "to_spare_pct": 32,
+        "from_coord": [
+          109.1,
+          21.47
+        ],
+        "to_coord": [
+          109.15,
+          21.42
+        ]
+      }
+    ]
+  }
+}
