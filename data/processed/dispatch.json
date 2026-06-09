@@ -190,11 +190,11 @@
       "lat": 21.48,
       "lng": 109.12,
       "district": "海城区",
+      "source": "raw+map",
       "operation_hours": "06:00 - 22:00",
       "equipment_online": 8,
       "equipment_total": 8,
       "capacity": 150,
-      "load_pct": 80,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -213,6 +213,7 @@
           "value": 8
         }
       ],
+      "load_pct": 80,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -244,11 +245,11 @@
       "lat": 21.42,
       "lng": 109.15,
       "district": "银海区",
+      "source": "raw+map",
       "operation_hours": "07:00 - 22:00",
       "equipment_online": 6,
       "equipment_total": 7,
       "capacity": 132,
-      "load_pct": 72,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -267,6 +268,7 @@
           "value": 9
         }
       ],
+      "load_pct": 72,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -298,11 +300,11 @@
       "lat": 21.44,
       "lng": 109.11,
       "district": "银海区",
+      "source": "raw+map",
       "operation_hours": "06:30 - 21:30",
       "equipment_online": 5,
       "equipment_total": 6,
       "capacity": 124,
-      "load_pct": 71,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -321,6 +323,7 @@
           "value": 8
         }
       ],
+      "load_pct": 71,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -352,11 +355,11 @@
       "lat": 21.5,
       "lng": 109.42,
       "district": "铁山港区",
+      "source": "raw+map",
       "operation_hours": "07:30 - 21:00",
       "equipment_online": 4,
       "equipment_total": 5,
       "capacity": 118,
-      "load_pct": 55,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -375,6 +378,7 @@
           "value": 8
         }
       ],
+      "load_pct": 55,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -406,11 +410,11 @@
       "lat": 21.66,
       "lng": 109.2,
       "district": "合浦县",
+      "source": "raw+map",
       "operation_hours": "08:00 - 20:00",
       "equipment_online": 3,
       "equipment_total": 5,
       "capacity": 110,
-      "load_pct": 65,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -429,6 +433,7 @@
           "value": 7
         }
       ],
+      "load_pct": 65,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -460,11 +465,11 @@
       "lat": 21.52,
       "lng": 109.17,
       "district": "海城区",
+      "source": "raw+map",
       "operation_hours": "24小时运行",
       "equipment_online": 10,
       "equipment_total": 10,
       "capacity": 168,
-      "load_pct": 89,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -483,6 +488,7 @@
           "value": 11
         }
       ],
+      "load_pct": 89,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -514,11 +520,11 @@
       "lat": 21.47,
       "lng": 109.1,
       "district": "海城区",
+      "source": "supplemented",
       "operation_hours": "06:00 - 23:00",
       "equipment_online": 9,
       "equipment_total": 9,
       "capacity": 155,
-      "load_pct": 90,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -537,6 +543,7 @@
           "value": 9
         }
       ],
+      "load_pct": 90,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -568,11 +575,11 @@
       "lat": 21.41,
       "lng": 109.2,
       "district": "银海区",
+      "source": "supplemented",
       "operation_hours": "07:00 - 22:30",
       "equipment_online": 7,
       "equipment_total": 7,
       "capacity": 138,
-      "load_pct": 90,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -591,6 +598,7 @@
           "value": 9
         }
       ],
+      "load_pct": 90,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -622,11 +630,11 @@
       "lat": 21.54,
       "lng": 109.25,
       "district": "合浦县",
+      "source": "supplemented",
       "operation_hours": "24小时运行",
       "equipment_online": 11,
       "equipment_total": 12,
       "capacity": 185,
-      "load_pct": 92,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -645,6 +653,7 @@
           "value": 11
         }
       ],
+      "load_pct": 92,
       "weekly_trend": {
         "dates": [
           "5/23",
@@ -676,11 +685,11 @@
       "lat": 21.67,
       "lng": 109.16,
       "district": "合浦县",
+      "source": "supplemented",
       "operation_hours": "06:30 - 22:00",
       "equipment_online": 8,
       "equipment_total": 9,
       "capacity": 178,
-      "load_pct": 94,
       "classification": [
         {
           "name": "厨余垃圾",
@@ -699,6 +708,7 @@
           "value": 11
         }
       ],
+      "load_pct": 94,
       "weekly_trend": {
         "dates": [
           "5/23",

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,16 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
 PROCESSED_DIR = DATA_DIR / "processed"
 
+RAW_FILES = [
+    "stations.json",
+    "map_points.json",
+    "daily_collection.json",
+    "district.json",
+    "monthly_rate.json",
+    "waste_class.json",
+]
+
+# 课程设计演示数据需要稳定的路由 ID，避免中文站名直接进入 URL。
 STATION_ID_BY_NAME = {
     "北部湾广场站": "beibuwan-square",
     "银滩站": "yintan",
@@ -22,6 +33,7 @@ STATION_ID_BY_NAME = {
     "廉州西片区站": "lianzhou-west",
 }
 
+# 原始 JSON 字段较少，以下映射用于补齐大屏演示所需的设备、能力、分类等业务字段。
 STATION_SUPPLEMENT = {
     "北部湾广场站": {"district": "海城区", "operation_hours": "06:00 - 22:00", "equipment_online": 8, "equipment_total": 8, "capacity": 150, "classification": [54, 39, 33, 8]},
     "银滩站": {"district": "银海区", "operation_hours": "07:00 - 22:00", "equipment_online": 6, "equipment_total": 7, "capacity": 132, "classification": [46, 35, 30, 9]},
@@ -36,6 +48,9 @@ STATION_SUPPLEMENT = {
 }
 
 CLASS_NAMES = ["厨余垃圾", "其他垃圾", "可回收物", "有害垃圾"]
+DISTRICTS = ["海城区", "银海区", "铁山港区", "合浦县"]
+BEIHAI_BOUNDS = {"min_lat": 21.18, "max_lat": 21.85, "min_lng": 108.85, "max_lng": 109.65}
+
 COMPLAINTS = {
     "title": "投诉分析",
     "total_month": 47,
@@ -56,84 +71,186 @@ def write_json(filename: str, payload: dict[str, Any]) -> None:
     target.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def parse_tons(value: Any) -> int:
+def safe_divide(numerator: float, denominator: float, default: float = 0) -> float:
+    return numerator / denominator if denominator else default
+
+
+def parse_tons(value: Any) -> tuple[int, bool]:
     if isinstance(value, (int, float)):
-        return int(value)
+        return int(value), False
     match = re.search(r"\d+", str(value))
-    return int(match.group()) if match else 0
+    return (int(match.group()), True) if match else (0, False)
 
 
-def normalize_status(value: str) -> str:
+def normalize_status(value: str) -> tuple[str, bool]:
     text = str(value).strip().lower()
-    if text in {"online", "运行中", "正常"}:
-        return "online"
-    return "offline"
+    normalized = "online" if text in {"online", "运行中", "正常"} else "offline"
+    return normalized, text != normalized
 
 
 def district_from_address(address: str) -> str:
-    for district in ["海城区", "银海区", "铁山港区", "合浦县"]:
+    for district in DISTRICTS:
         if district in address:
             return district
     return "未分区"
 
 
-def build_stations() -> list[dict[str, Any]]:
-    raw_stations = {item["name"]: item for item in read_json("stations.json")}
-    raw_points = {item["name"]: item for item in read_json("map_points.json")}
-    stations: list[dict[str, Any]] = []
+def calculate_load_pct(daily_tons: int, capacity: int) -> int:
+    return round(safe_divide(daily_tons, capacity) * 100)
 
-    for name in STATION_ID_BY_NAME:
+
+def load_raw_sources() -> dict[str, Any]:
+    return {filename: read_json(filename) for filename in RAW_FILES}
+
+
+def init_quality(raw_sources: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "input_files": RAW_FILES,
+        "raw_station_count": len(raw_sources["stations.json"]),
+        "raw_map_point_count": len(raw_sources["map_points.json"]),
+        "target_station_count": len(STATION_ID_BY_NAME),
+        "daily_tons_converted_count": 0,
+        "status_standardized_count": 0,
+        "supplemented_station_count": 0,
+        "field_fill_count": 0,
+        "filled_fields": [],
+        "coordinate_source": Counter(),
+        "validation": {},
+    }
+
+
+def record_fill(quality: dict[str, Any], station_name: str, field: str, source: str) -> None:
+    quality["field_fill_count"] += 1
+    quality["filled_fields"].append({"station": station_name, "field": field, "source": source})
+
+
+def clean_station_records(raw_sources: dict[str, Any], quality: dict[str, Any]) -> list[dict[str, Any]]:
+    raw_stations = {item["name"]: item for item in raw_sources["stations.json"]}
+    raw_points = {item["name"]: item for item in raw_sources["map_points.json"]}
+    cleaned: list[dict[str, Any]] = []
+
+    for name, station_id in STATION_ID_BY_NAME.items():
         raw = raw_stations.get(name, {})
         point = raw_points.get(name, {})
         supplement = STATION_SUPPLEMENT[name]
-        value = point.get("value", [])
-        daily_tons = parse_tons(raw.get("daily", supplement.get("daily_tons", value[2] if len(value) >= 3 else 0)))
-        address = raw.get("address") or supplement.get("address") or point.get("address", "")
-        status = normalize_status(raw.get("status", supplement.get("status", point.get("status", "online"))))
-        lat = supplement.get("lat", value[1] if len(value) >= 2 else None)
-        lng = supplement.get("lng", value[0] if len(value) >= 1 else None)
-        district = supplement.get("district") or district_from_address(address)
-        classification_values = supplement["classification"]
-        classification = [
-            {"name": class_name, "value": value}
-            for class_name, value in zip(CLASS_NAMES, classification_values)
-        ]
-        weekly_values = [max(0, round(daily_tons * factor)) for factor in [0.93, 0.96, 0.98, 1.01, 1.03, 0.99, 1.0]]
-        if status == "offline":
-            weekly_values[-3:-1] = [0, 0]
+        if not raw:
+            quality["supplemented_station_count"] += 1
 
-        stations.append(
+        value = point.get("value", [])
+        raw_daily = raw.get("daily", supplement.get("daily_tons", value[2] if len(value) >= 3 else 0))
+        daily_tons, converted = parse_tons(raw_daily)
+        if converted:
+            quality["daily_tons_converted_count"] += 1
+
+        raw_status = raw.get("status", supplement.get("status", point.get("status", "online")))
+        status, standardized = normalize_status(raw_status)
+        if standardized:
+            quality["status_standardized_count"] += 1
+
+        cleaned.append(
             {
-                "id": STATION_ID_BY_NAME[name],
+                "id": station_id,
                 "name": name,
-                "address": address,
-                "collector": raw.get("collector") or supplement.get("collector", "未配置"),
+                "address": raw.get("address") or point.get("address") or supplement.get("address"),
+                "collector": raw.get("collector") or supplement.get("collector"),
                 "daily_tons": daily_tons,
+                "raw_daily": raw_daily,
                 "status": status,
-                "lat": lat,
-                "lng": lng,
-                "district": district,
-                "operation_hours": supplement["operation_hours"],
-                "equipment_online": supplement["equipment_online"],
-                "equipment_total": supplement["equipment_total"],
-                "capacity": supplement["capacity"],
-                "load_pct": round(daily_tons / supplement["capacity"] * 100),
-                "classification": classification,
-                "weekly_trend": {
-                    "dates": ["5/23", "5/24", "5/25", "5/26", "5/27", "5/28", "5/29"],
-                    "values": weekly_values,
-                },
+                "raw_status": raw_status,
+                "lat": value[1] if len(value) >= 2 else supplement.get("lat"),
+                "lng": value[0] if len(value) >= 1 else supplement.get("lng"),
+                "district": supplement.get("district") or district_from_address(raw.get("address", "")),
+                "source": "raw+map" if raw and point else "supplemented",
             }
         )
+    return cleaned
+
+
+def enrich_station_records(cleaned: list[dict[str, Any]], quality: dict[str, Any]) -> list[dict[str, Any]]:
+    stations: list[dict[str, Any]] = []
+    for record in cleaned:
+        name = record["name"]
+        supplement = STATION_SUPPLEMENT[name]
+        station = dict(record)
+
+        for field in ["address", "collector", "district"]:
+            if not station.get(field):
+                station[field] = supplement.get(field) or "未配置"
+                record_fill(quality, name, field, "station_supplement")
+
+        if not station.get("lat") or not station.get("lng"):
+            station["lat"] = supplement.get("lat")
+            station["lng"] = supplement.get("lng")
+            record_fill(quality, name, "lat/lng", "station_supplement")
+            quality["coordinate_source"]["supplement"] += 1
+        else:
+            quality["coordinate_source"]["map_points"] += 1
+
+        for field in ["operation_hours", "equipment_online", "equipment_total", "capacity"]:
+            station[field] = supplement[field]
+            record_fill(quality, name, field, "station_supplement")
+
+        classification = [
+            {"name": class_name, "value": value}
+            for class_name, value in zip(CLASS_NAMES, supplement["classification"])
+        ]
+        station["classification"] = classification
+        station["load_pct"] = calculate_load_pct(station["daily_tons"], station["capacity"])
+        station["weekly_trend"] = build_weekly_trend(station["daily_tons"], station["status"])
+        station.pop("raw_daily", None)
+        station.pop("raw_status", None)
+        stations.append(station)
     return stations
 
 
+def build_weekly_trend(daily_tons: int, status: str) -> dict[str, Any]:
+    weekly_values = [max(0, round(daily_tons * factor)) for factor in [0.93, 0.96, 0.98, 1.01, 1.03, 0.99, 1.0]]
+    if status == "offline":
+        weekly_values[-3:-1] = [0, 0]
+    return {
+        "dates": ["5/23", "5/24", "5/25", "5/26", "5/27", "5/28", "5/29"],
+        "values": weekly_values,
+    }
+
+
+def validate_stations(stations: list[dict[str, Any]], quality: dict[str, Any]) -> dict[str, Any]:
+    ids = [station["id"] for station in stations]
+    duplicated_ids = [station_id for station_id, count in Counter(ids).items() if count > 1]
+    missing_fields = []
+    coordinate_anomalies = []
+
+    for station in stations:
+        for field in ["id", "name", "address", "daily_tons", "status", "lat", "lng", "district"]:
+            if station.get(field) in {None, "", 0} and field not in {"daily_tons"}:
+                missing_fields.append({"station": station["name"], "field": field})
+        lat = station.get("lat")
+        lng = station.get("lng")
+        if not (BEIHAI_BOUNDS["min_lat"] <= lat <= BEIHAI_BOUNDS["max_lat"] and BEIHAI_BOUNDS["min_lng"] <= lng <= BEIHAI_BOUNDS["max_lng"]):
+            coordinate_anomalies.append({"station": station["name"], "lat": lat, "lng": lng})
+
+    high_load = [station for station in stations if station["load_pct"] >= 85]
+    offline = [station for station in stations if station["status"] != "online"]
+    validation = {
+        "standardized_station_count": len(stations),
+        "online_station_count": len(stations) - len(offline),
+        "offline_station_count": len(offline),
+        "offline_stations": [station["name"] for station in offline],
+        "high_load_station_count": len(high_load),
+        "high_load_stations": [{"name": station["name"], "load_pct": station["load_pct"]} for station in high_load],
+        "duplicated_ids": duplicated_ids,
+        "missing_fields": missing_fields,
+        "coordinate_anomalies": coordinate_anomalies,
+    }
+    quality["validation"] = validation
+    quality["coordinate_source"] = dict(quality["coordinate_source"])
+    return validation
+
+
 def aggregate_district_values(stations: list[dict[str, Any]]) -> dict[str, Any]:
-    districts = ["海城区", "银海区", "铁山港区", "合浦县"]
     return {
         "title": "各区垃圾日产量（吨）",
-        "categories": districts,
-        "values": [sum(station["daily_tons"] for station in stations if station["district"] == district) for district in districts],
+        "categories": DISTRICTS,
+        "values": [sum(station["daily_tons"] for station in stations if station["district"] == district) for district in DISTRICTS],
     }
 
 
@@ -151,15 +268,16 @@ def build_analysis(metrics: dict[str, Any], stations: list[dict[str, Any]]) -> d
     }
 
 
-def build_dashboard_payload(stations: list[dict[str, Any]]) -> dict[str, Any]:
-    daily = read_json("daily_collection.json")
-    waste_class = read_json("waste_class.json")
-    monthly_rate = read_json("monthly_rate.json")
+def build_dashboard_payload(raw_sources: dict[str, Any], stations: list[dict[str, Any]]) -> dict[str, Any]:
+    daily = raw_sources["daily_collection.json"]
+    waste_class = raw_sources["waste_class.json"]
+    monthly_rate = raw_sources["monthly_rate.json"]
 
     daily_collect = sum(station["daily_tons"] for station in stations)
     yesterday = daily["collection"][-2]
     recycling_today = daily["recycling"][-1]
-    utilization_rate = round(recycling_today / daily_collect * 100)
+    utilization_rate = round(safe_divide(recycling_today, daily_collect) * 100)
+    utilization_rate_yesterday = round(safe_divide(daily["recycling"][-2], yesterday) * 100)
     online = sum(1 for station in stations if station["status"] == "online")
     total = len(stations)
     district = aggregate_district_values(stations)
@@ -171,10 +289,10 @@ def build_dashboard_payload(stations: list[dict[str, Any]]) -> dict[str, Any]:
         "daily_collect": daily_collect,
         "daily_collect_yesterday": yesterday,
         "daily_collect_change": daily_collect - yesterday,
-        "daily_collect_pct": round((daily_collect - yesterday) / yesterday * 100, 1),
+        "daily_collect_pct": round(safe_divide(daily_collect - yesterday, yesterday) * 100, 1),
         "utilization_rate": utilization_rate,
-        "utilization_rate_yesterday": round(daily["recycling"][-2] / yesterday * 100),
-        "utilization_rate_change": utilization_rate - round(daily["recycling"][-2] / yesterday * 100),
+        "utilization_rate_yesterday": utilization_rate_yesterday,
+        "utilization_rate_change": utilization_rate - utilization_rate_yesterday,
         "utilization_rate_target": 40,
         "online_stations": online,
         "online_stations_total": total,
@@ -210,9 +328,9 @@ def build_dashboard_payload(stations: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def score_station(station: dict[str, Any]) -> int:
-    capacity_score = min(100, station["capacity"] / 185 * 100)
-    recycling_score = min(100, station["classification"][2]["value"] / 42 * 100)
-    equipment_score = station["equipment_online"] / station["equipment_total"] * 100
+    capacity_score = min(100, safe_divide(station["capacity"], 185) * 100)
+    recycling_score = min(100, safe_divide(station["classification"][2]["value"], 42) * 100)
+    equipment_score = safe_divide(station["equipment_online"], station["equipment_total"]) * 100
     status_score = 100 if station["status"] == "online" else 45
     return round(capacity_score * 0.35 + recycling_score * 0.30 + equipment_score * 0.20 + status_score * 0.15)
 
@@ -222,9 +340,8 @@ def build_assessment_payload(stations: list[dict[str, Any]]) -> dict[str, Any]:
         {"name": s["name"], "recycling": s["classification"][2]["value"], "output": s["daily_tons"], "capacity": s["capacity"], "score": score_station(s)}
         for s in stations
     ], key=lambda item: item["score"], reverse=True)
-    districts = ["海城区", "银海区", "铁山港区", "合浦县"]
     tree_children = []
-    for district in districts:
+    for district in DISTRICTS:
         children = [{"name": s["name"], "value": s["capacity"]} for s in stations if s["district"] == district]
         tree_children.append({"name": district, "children": children})
     heatmap_values = []
@@ -278,16 +395,121 @@ def build_dispatch_payload(dashboard: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def main() -> None:
+def build_preprocess_report(quality: dict[str, Any], stations: list[dict[str, Any]], dashboard: dict[str, Any]) -> dict[str, Any]:
+    validation = quality["validation"]
+    district_totals = aggregate_district_values(stations)
+    return {
+        "title": "北海市环卫可视化项目数据预处理报告",
+        "process_version": "course-design-preprocess-v2",
+        "pipeline": ["数据读取", "字段清洗", "业务补齐", "质量检查", "指标聚合", "JSON输出"],
+        "input_summary": {
+            "input_files": quality["input_files"],
+            "raw_station_count": quality["raw_station_count"],
+            "raw_map_point_count": quality["raw_map_point_count"],
+            "target_station_count": quality["target_station_count"],
+        },
+        "cleaning_summary": {
+            "daily_tons_converted_count": quality["daily_tons_converted_count"],
+            "status_standardized_count": quality["status_standardized_count"],
+            "supplemented_station_count": quality["supplemented_station_count"],
+            "field_fill_count": quality["field_fill_count"],
+            "coordinate_source": quality["coordinate_source"],
+        },
+        "quality_summary": validation,
+        "aggregation_summary": {
+            "daily_collect": dashboard["metrics"]["daily_collect"],
+            "utilization_rate": dashboard["metrics"]["utilization_rate"],
+            "online_station_rate": round(safe_divide(validation["online_station_count"], validation["standardized_station_count"]) * 100, 1),
+            "district_daily_tons": dict(zip(district_totals["categories"], district_totals["values"])),
+            "top_station": max(stations, key=lambda item: item["daily_tons"])["name"],
+        },
+        "output_files": [
+            "data/processed/dashboard.json",
+            "data/processed/assessment.json",
+            "data/processed/dispatch.json",
+            "data/processed/preprocess_report.json",
+            "data/processed/preprocess_report.md",
+        ],
+    }
+
+
+def build_report_markdown(report: dict[str, Any]) -> str:
+    aggregation = report["aggregation_summary"]
+    quality = report["quality_summary"]
+    cleaning = report["cleaning_summary"]
+    lines = [
+        f"# {report['title']}",
+        "",
+        "## 1. 处理流程",
+        "",
+        "本项目的数据处理流程为：" + " → ".join(report["pipeline"]) + "。",
+        "",
+        "## 2. 输入数据概况",
+        "",
+        f"- 输入文件数：{len(report['input_summary']['input_files'])}",
+        f"- 原始站点记录数：{report['input_summary']['raw_station_count']}",
+        f"- 地图点位记录数：{report['input_summary']['raw_map_point_count']}",
+        f"- 标准化目标站点数：{report['input_summary']['target_station_count']}",
+        "",
+        "## 3. 清洗与补齐结果",
+        "",
+        f"- 日处理量单位字符串转数值：{cleaning['daily_tons_converted_count']} 条",
+        f"- 状态字段标准化：{cleaning['status_standardized_count']} 条",
+        f"- 通过业务映射补充站点：{cleaning['supplemented_station_count']} 个",
+        f"- 字段补齐总次数：{cleaning['field_fill_count']} 次",
+        f"- 经纬度来源：{cleaning['coordinate_source']}",
+        "",
+        "## 4. 数据质量检查",
+        "",
+        f"- 标准化后站点数：{quality['standardized_station_count']}",
+        f"- 在线站点数：{quality['online_station_count']}",
+        f"- 离线站点数：{quality['offline_station_count']}（{', '.join(quality['offline_stations']) or '无'}）",
+        f"- 高负荷站点数：{quality['high_load_station_count']}",
+        f"- 重复 ID：{', '.join(quality['duplicated_ids']) or '无'}",
+        f"- 缺失关键字段：{len(quality['missing_fields'])} 项",
+        f"- 经纬度异常：{len(quality['coordinate_anomalies'])} 项",
+        "",
+        "## 5. 聚合指标摘要",
+        "",
+        f"- 今日垃圾收集量：{aggregation['daily_collect']} 吨",
+        f"- 资源化利用率：{aggregation['utilization_rate']}%",
+        f"- 站点在线率：{aggregation['online_station_rate']}%",
+        f"- 日处理量最高站点：{aggregation['top_station']}",
+        "- 各区日产量：" + "、".join(f"{name} {value} 吨" for name, value in aggregation["district_daily_tons"].items()),
+        "",
+        "## 6. 输出文件",
+        "",
+        *[f"- `{filename}`" for filename in report["output_files"]],
+        "",
+        "该报告可作为课程设计说明文档中“数据获取及分析 / 数据预处理过程”的支撑材料。",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def write_outputs(dashboard: dict[str, Any], assessment: dict[str, Any], dispatch: dict[str, Any], report: dict[str, Any]) -> None:
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    stations = build_stations()
-    dashboard = build_dashboard_payload(stations)
-    assessment = build_assessment_payload(stations)
-    dispatch = build_dispatch_payload(dashboard)
     write_json("dashboard.json", dashboard)
     write_json("assessment.json", assessment)
     write_json("dispatch.json", dispatch)
+    write_json("preprocess_report.json", report)
+    (PROCESSED_DIR / "preprocess_report.md").write_text(build_report_markdown(report), encoding="utf-8")
+
+
+def main() -> None:
+    raw_sources = load_raw_sources()
+    quality = init_quality(raw_sources)
+    cleaned = clean_station_records(raw_sources, quality)
+    stations = enrich_station_records(cleaned, quality)
+    validate_stations(stations, quality)
+    dashboard = build_dashboard_payload(raw_sources, stations)
+    assessment = build_assessment_payload(stations)
+    dispatch = build_dispatch_payload(dashboard)
+    report = build_preprocess_report(quality, stations, dashboard)
+    write_outputs(dashboard, assessment, dispatch, report)
     print(f"processed data generated: {PROCESSED_DIR}")
+    print(f"standardized stations: {report['quality_summary']['standardized_station_count']}")
+    print(f"preprocess report: {PROCESSED_DIR / 'preprocess_report.md'}")
 
 
 if __name__ == "__main__":

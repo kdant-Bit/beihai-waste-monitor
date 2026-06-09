@@ -32,6 +32,10 @@ D:\anaconda3\envs\env\python.exe app.py
 - `data/processed/dashboard.json`
 - `data/processed/assessment.json`
 - `data/processed/dispatch.json`
+- `data/processed/preprocess_report.json`
+- `data/processed/preprocess_report.md`
+
+`preprocess_report.md` 是文字版预处理报告，可用于后续项目说明文档中的“数据获取及分析/数据预处理过程”章节。
 
 首次运行或修改 `data/*.json` 后，建议先执行一次预处理脚本。
 

@@ -78,12 +78,19 @@ function renderRankingTable(rankings) {
 function renderVerticalBar(chartData) {
   const chart = getAssessmentChart("assessmentVerticalChart");
   chart.setOption({
-    grid: { left: 34, right: 18, top: 18, bottom: 50, containLabel: true },
+    grid: { left: 42, right: 24, top: 34, bottom: 78, containLabel: true },
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     xAxis: {
       type: "category",
       data: chartData.categories,
-      axisLabel: { rotate: 32, color: "#5D4D40", fontSize: 10 },
+      axisLabel: {
+        interval: 0,
+        rotate: 38,
+        color: "#5D4D40",
+        fontSize: 10,
+        overflow: "truncate",
+        width: 72,
+      },
       axisTick: { show: false },
       axisLine: { lineStyle: { color: "#D0C8C0" } },
     },
@@ -96,7 +103,7 @@ function renderVerticalBar(chartData) {
     series: [{
       type: "bar",
       data: chartData.values,
-      barWidth: "50%",
+      barWidth: "42%",
       label: { show: true, position: "top", color: "#5D4D40" },
       itemStyle: {
         borderRadius: [4, 4, 0, 0],
@@ -112,7 +119,7 @@ function renderVerticalBar(chartData) {
 function renderHorizontalBar(chartData) {
   const chart = getAssessmentChart("assessmentHorizontalChart");
   chart.setOption({
-    grid: { left: 76, right: 20, top: 18, bottom: 18, containLabel: true },
+    grid: { left: 104, right: 74, top: 24, bottom: 30, containLabel: true },
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     xAxis: {
       type: "value",
@@ -125,7 +132,7 @@ function renderHorizontalBar(chartData) {
       data: chartData.categories,
       axisTick: { show: false },
       axisLine: { show: false },
-      axisLabel: { color: "#5D4D40", fontSize: 11 },
+      axisLabel: { color: "#5D4D40", fontSize: 11, overflow: "truncate", width: 92 },
     },
     series: [{
       type: "bar",
@@ -153,18 +160,18 @@ function renderHeatmap(chartData) {
         return `${chartData.yAxis[params.data[1]]}<br/>${chartData.xAxis[params.data[0]]}: ${params.data[2]}`;
       },
     },
-    grid: { left: 90, right: 20, top: 20, bottom: 40, containLabel: true },
+    grid: { left: 104, right: 28, top: 28, bottom: 70, containLabel: true },
     xAxis: {
       type: "category",
       data: chartData.xAxis,
       splitArea: { show: true },
-      axisLabel: { color: "#5D4D40", fontSize: 11 },
+      axisLabel: { color: "#5D4D40", fontSize: 11, interval: 0 },
     },
     yAxis: {
       type: "category",
       data: chartData.yAxis,
       splitArea: { show: true },
-      axisLabel: { color: "#5D4D40", fontSize: 10 },
+      axisLabel: { color: "#5D4D40", fontSize: 10, overflow: "truncate", width: 88 },
     },
     visualMap: {
       min: 20,
@@ -172,7 +179,10 @@ function renderHeatmap(chartData) {
       calculable: true,
       orient: "horizontal",
       left: "center",
-      bottom: 0,
+      bottom: 10,
+      itemWidth: 14,
+      itemHeight: 120,
+      textStyle: { color: "#5D4D40", fontSize: 10 },
       inRange: { color: ["#F5EFEA", "#A5D6A7", "#2E7D32"] },
     },
     series: [{
@@ -190,10 +200,10 @@ function renderTree(chartData) {
     series: [{
       type: "tree",
       data: [chartData.data],
-      top: "4%",
-      left: "8%",
-      bottom: "4%",
-      right: "20%",
+      top: "8%",
+      left: "10%",
+      bottom: "8%",
+      right: "18%",
       symbolSize: 10,
       lineStyle: { color: "#8A7A6D", width: 1.2 },
       label: { color: "#5D4D40", fontSize: 11, verticalAlign: "middle", align: "right" },

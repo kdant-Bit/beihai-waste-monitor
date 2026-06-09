@@ -1,0 +1,87 @@
+{
+  "title": "北海市环卫可视化项目数据预处理报告",
+  "process_version": "course-design-preprocess-v2",
+  "pipeline": [
+    "数据读取",
+    "字段清洗",
+    "业务补齐",
+    "质量检查",
+    "指标聚合",
+    "JSON输出"
+  ],
+  "input_summary": {
+    "input_files": [
+      "stations.json",
+      "map_points.json",
+      "daily_collection.json",
+      "district.json",
+      "monthly_rate.json",
+      "waste_class.json"
+    ],
+    "raw_station_count": 6,
+    "raw_map_point_count": 6,
+    "target_station_count": 10
+  },
+  "cleaning_summary": {
+    "daily_tons_converted_count": 6,
+    "status_standardized_count": 0,
+    "supplemented_station_count": 4,
+    "field_fill_count": 40,
+    "coordinate_source": {
+      "map_points": 10
+    }
+  },
+  "quality_summary": {
+    "standardized_station_count": 10,
+    "online_station_count": 9,
+    "offline_station_count": 1,
+    "offline_stations": [
+      "合浦站"
+    ],
+    "high_load_station_count": 5,
+    "high_load_stations": [
+      {
+        "name": "工业园区站",
+        "load_pct": 89
+      },
+      {
+        "name": "老城转运站",
+        "load_pct": 90
+      },
+      {
+        "name": "银滩东区站",
+        "load_pct": 90
+      },
+      {
+        "name": "机场物流园站",
+        "load_pct": 92
+      },
+      {
+        "name": "廉州西片区站",
+        "load_pct": 94
+      }
+    ],
+    "duplicated_ids": [],
+    "missing_fields": [],
+    "coordinate_anomalies": []
+  },
+  "aggregation_summary": {
+    "daily_collect": 1191,
+    "utilization_rate": 28,
+    "online_station_rate": 90.0,
+    "district_daily_tons": {
+      "海城区": 410,
+      "银海区": 307,
+      "铁山港区": 65,
+      "合浦县": 409
+    },
+    "top_station": "机场物流园站"
+  },
+  "output_files": [
+    "data/processed/dashboard.json",
+    "data/processed/assessment.json",
+    "data/processed/dispatch.json",
+    "data/processed/preprocess_report.json",
+    "data/processed/preprocess_report.md"
+  ]
+}
